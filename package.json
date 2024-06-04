@@ -8,7 +8,7 @@
     "test": "npx hardhat test",
     "build": "npx hardhat compile",
     "deploy": "npx hardhat run scripts/deploy.ts --network localhost",
-    "test:watch": "npx nodemon --exec \"npx hardhat test\" --watch \"contracts\" --watch \"test\" --ext \"ts,sol\"",
+    "test:watch": "npx nodemon --exec \"npx hardhat test\" --watch \"typechain-types\" --watch \"test\" --ext \"ts\"",
     "build:watch": "npx nodemon --exec \"npx hardhat compile\" --watch \"contracts\" --ext \"sol\""
   },
   "keywords": [],

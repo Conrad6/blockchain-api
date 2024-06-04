@@ -9,6 +9,7 @@ import type {
   Result,
   Interface,
   EventFragment,
+  AddressLike,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -22,13 +23,51 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export declare namespace Dappazon {
+  export type ItemStruct = {
+    id: BigNumberish;
+    name: string;
+    category: string;
+    image: string;
+    cost: BigNumberish;
+    rating: BigNumberish;
+    stock: BigNumberish;
+  };
+
+  export type ItemStructOutput = [
+    id: bigint,
+    name: string,
+    category: string,
+    image: string,
+    cost: bigint,
+    rating: bigint,
+    stock: bigint
+  ] & {
+    id: bigint;
+    name: string;
+    category: string;
+    image: string;
+    cost: bigint;
+    rating: bigint;
+    stock: bigint;
+  };
+}
+
 export interface DappazonInterface extends Interface {
   getFunction(
-    nameOrSignature: "items" | "list" | "name" | "owner"
+    nameOrSignature:
+      | "buy"
+      | "items"
+      | "list"
+      | "name"
+      | "orderCount"
+      | "orders"
+      | "owner"
   ): FunctionFragment;
 
   getEvent(nameOrSignatureOrTopic: "List"): EventFragment;
 
+  encodeFunctionData(functionFragment: "buy", values: [BigNumberish]): string;
   encodeFunctionData(functionFragment: "items", values: [BigNumberish]): string;
   encodeFunctionData(
     functionFragment: "list",
@@ -43,11 +82,22 @@ export interface DappazonInterface extends Interface {
     ]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "orderCount",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "orders",
+    values: [AddressLike, BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
 
+  decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "items", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "list", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "orderCount", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "orders", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
 }
 
@@ -112,6 +162,8 @@ export interface Dappazon extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  buy: TypedContractMethod<[_id: BigNumberish], [void], "payable">;
+
   items: TypedContractMethod<
     [arg0: BigNumberish],
     [
@@ -144,12 +196,28 @@ export interface Dappazon extends BaseContract {
 
   name: TypedContractMethod<[], [string], "view">;
 
+  orderCount: TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+
+  orders: TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [
+      [bigint, Dappazon.ItemStructOutput] & {
+        time: bigint;
+        item: Dappazon.ItemStructOutput;
+      }
+    ],
+    "view"
+  >;
+
   owner: TypedContractMethod<[], [string], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "buy"
+  ): TypedContractMethod<[_id: BigNumberish], [void], "payable">;
   getFunction(
     nameOrSignature: "items"
   ): TypedContractMethod<
@@ -185,6 +253,21 @@ export interface Dappazon extends BaseContract {
   getFunction(
     nameOrSignature: "name"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "orderCount"
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "orders"
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [
+      [bigint, Dappazon.ItemStructOutput] & {
+        time: bigint;
+        item: Dappazon.ItemStructOutput;
+      }
+    ],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
