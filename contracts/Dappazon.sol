@@ -40,7 +40,7 @@ contract Dappazon {
 
     function list(
         uint256 _id,
-        string memory _name,
+        string memory _name, 
         string memory _category,
         string memory _image,
         uint256 _cost,
