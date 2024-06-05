@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { ContractTransaction, ContractTransactionResponse, Signer, Transaction, parseUnits } from 'ethers';
+import { ContractTransactionResponse, Signer, parseUnits } from 'ethers';
 import { ethers } from 'hardhat';
 import { Dappazon } from '../typechain-types';
 
@@ -88,4 +88,31 @@ describe('Dappazon', () => {
             expect(transaction).to.emit(dappazon, 'Buy')
         });
     });
+
+    describe('Withdrawal', () => {
+        let balanceBefore: bigint;
+
+        beforeEach(async () => {
+            let transaction = await dappazon.connect(deployer).list(ID, NAME, CATEGORY, IMAGE, COST, RATING, STOCK);
+            await transaction.wait();
+
+            transaction = await dappazon.connect(buyer).buy(ID, { value: COST });
+            await transaction.wait();
+
+            balanceBefore = await ethers.provider.getBalance(await deployer.getAddress());
+
+            transaction = await dappazon.connect(deployer).withdraw();
+            await transaction.wait();
+        });
+
+        it('Updates the owner\'s balance', async () => {
+            const balanceAfter = await ethers.provider.getBalance(await deployer.getAddress());
+            expect(balanceAfter).to.greaterThan(balanceBefore);
+        });
+
+        it('Updates the contract\'s balance', async () => {
+            const result = await ethers.provider.getBalance(await dappazon.getAddress());
+            expect(result).to.equal(0);
+        })
+    })
 });
