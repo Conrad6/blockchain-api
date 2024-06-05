@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { Dappazon__factory } from "./Dappazon__factory";
+export { Lock__factory } from "./Lock__factory";

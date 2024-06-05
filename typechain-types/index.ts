@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { Dappazon } from "./Dappazon";
+export type { Lock } from "./Lock";
 export * as factories from "./factories";
 export { Dappazon__factory } from "./factories/Dappazon__factory";
+export { Lock__factory } from "./factories/Lock__factory";
